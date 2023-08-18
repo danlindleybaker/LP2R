@@ -115,9 +115,9 @@ while(!readEquality(f1,sL,sR).eof()){
 
                                     }
 f1.close();
-CSVdelimiter+=" "; // Add a space here 
+  //CSVdelimiter+=" "; // Add a space here 
 // Long time maximum allowed drop in phi_ST during one time-step
-STmaxDrop=exp(-log(DtMult)/(2.0*Alpha));
+//STmaxDrop=exp(-log(DtMult)/(2.0*Alpha));
 // logarithm of DtMult
-Log_DtMult=log(DtMult);
+//Log_DtMult=log(DtMult);
 }

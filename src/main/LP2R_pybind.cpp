@@ -1,19 +1,17 @@
+#include <pybind11/pybind11.h>
 #include "../include/LP2R.h"
-#include "../include/LP2R_global.h"
+#include "../include/LP2R_global.h"   
 #include "../include/tclap/CmdLine.h"
-/** \file
- * \brief \c main for LP2R
- * \param[in] argc Number of command line arguments
- * \param[in] argv argument list
- * \return nonzero integer is run fails
- */
-int main(int argc, char *argv[]) {
+
+namespace py = pybind11;
+
+int LP2R() {
   using namespace LP2R_NS;
   int rtval = 0;
-  rtval = parse_arg(argc, argv);
-  if (rtval != 0) {
-    return rtval;
-  }
+  // rtval = parse_arg(argc, argv);
+  // if (rtval != 0) {
+  //   return rtval;
+  // }
 
   rtval = ReadInput();
 
@@ -47,4 +45,10 @@ int main(int argc, char *argv[]) {
   }
 
   return rtval;
+}
+
+
+PYBIND11_MODULE(LP2R, m) {
+  m.doc() = "pybind11 example plugin";
+  m.def("LP2R", &LP2R, "Function to run LP2R calculations");
 }

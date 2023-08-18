@@ -1,19 +1,21 @@
-#include "../include/LP2R.h"
-#include "../include/LP2R_global.h"
-#include "../include/tclap/CmdLine.h"
 /** \file
  * \brief \c main for LP2R
  * \param[in] argc Number of command line arguments
  * \param[in] argv argument list
  * \return nonzero integer is run fails
  */
-int main(int argc, char *argv[]) {
+// need to rewrite this such that it can be used as an entry
+// point for python module rather than CLI app
+//
+//
+
+int LP2R() {
   using namespace LP2R_NS;
   int rtval = 0;
-  rtval = parse_arg(argc, argv);
-  if (rtval != 0) {
-    return rtval;
-  }
+  // rtval = parse_arg(argc, argv);
+  // if (rtval != 0) {
+  //   return rtval;
+  // }
 
   rtval = ReadInput();
 
@@ -48,3 +50,5 @@ int main(int argc, char *argv[]) {
 
   return rtval;
 }
+
+//int main(int argc, char *argv[]) { LP2R(); }

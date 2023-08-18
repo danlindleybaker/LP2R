@@ -1,3 +1,4 @@
+int LP2R(void);
 int parse_arg(int argc, char* argv[]);
 void ReadRCFL(void);
 int ReadInput(void);
