@@ -1,18 +1,19 @@
-#include <pybind11/pybind11.h>
 #include "../include/LP2R.h"
-#include "../include/LP2R_global.h"   
+#include "../include/LP2R_global.h"
 #include "../include/tclap/CmdLine.h"
+#include <pybind11/pybind11.h>
 
 namespace py = pybind11;
 
-int LP2R() {
+int LP2R_run(std::string filename) {
   using namespace LP2R_NS;
   int rtval = 0;
   // rtval = parse_arg(argc, argv);
   // if (rtval != 0) {
   //   return rtval;
   // }
-
+  std::cout << filename << std::endl;
+  inpFNM = filename;
   rtval = ReadInput();
 
   if (rtval != 0) {
@@ -47,8 +48,7 @@ int LP2R() {
   return rtval;
 }
 
-
 PYBIND11_MODULE(LP2R, m) {
   m.doc() = "pybind11 example plugin";
-  m.def("LP2R", &LP2R, "Function that adds");
+  m.def("LP2R_run", &LP2R_run, "Function that adds", py::arg("a"));
 }
