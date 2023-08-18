@@ -50,5 +50,5 @@ int LP2R() {
 
 PYBIND11_MODULE(LP2R, m) {
   m.doc() = "pybind11 example plugin";
-  m.def("LP2R", &LP2R, "Function to run LP2R calculations");
+  m.def("LP2R", &LP2R, "Function that adds");
 }
