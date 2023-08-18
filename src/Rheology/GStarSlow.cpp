@@ -85,8 +85,14 @@ void GStarSlow(const double w, double &gp, double &g2p, double &ep,
     }
     double rint1, rint2;
     symbint(tk, t_ar[n - 1], w, rint1, rint2);
-    rint1 *= 0.50 * pow(phi_ST_ar[n - 1], Alpha);
-    rint2 *= 0.50 * pow(phi_ST_ar[n - 1], Alpha);
+
+    if (Alpha == 1) {
+      rint1 *= 0.50 * phi_ST_ar[n - 1];
+      rint2 *= 0.50 * phi_ST_ar[n - 1];
+    } else {
+      rint1 *= 0.50 * pow(phi_ST_ar[n - 1], Alpha);
+      rint2 *= 0.50 * pow(phi_ST_ar[n - 1], Alpha);
+    }
     gp += rint2 * tk * tk * dphi;
     g2p += rint1 * tk * dphi;
     tv = tk / (1.0 + wsq * tk * tk);
