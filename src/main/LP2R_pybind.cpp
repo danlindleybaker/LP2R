@@ -5,7 +5,7 @@
 
 namespace py = pybind11;
 
-int LP2R_run(std::string filename) {
+int LP2R_run(std::string filename, std::string out_file) {
   using namespace LP2R_NS;
   int rtval = 0;
   // rtval = parse_arg(argc, argv);
@@ -15,10 +15,12 @@ int LP2R_run(std::string filename) {
   std::cout << filename << std::endl;
   inpFNM = filename;
   rtval = ReadInput();
+  
 
   if (rtval != 0) {
     if (GenLogFL) {
       f_Log << "Program ended encounting error during setup" << std::endl;
+      std::cout << "ahhhhhhhhhh" << std::endl;
       f_Log.close();
     }
     return rtval;
@@ -32,7 +34,9 @@ int LP2R_run(std::string filename) {
     }
   }
 
+  MechRelSpecFNM = out_file;
   LinRheology();
+  
 
   if (OutPhiPhiST) {
     f_phi.close();
@@ -41,6 +45,7 @@ int LP2R_run(std::string filename) {
     f_trelax.close();
   }
   if (GenLogFL) {
+    std::cout << "Hooray, I think...." << std::endl;
     f_Log << "Program ended normally." << std::endl;
     f_Log.close();
   }
@@ -50,5 +55,5 @@ int LP2R_run(std::string filename) {
 
 PYBIND11_MODULE(LP2R, m) {
   m.doc() = "pybind11 example plugin";
-  m.def("LP2R_run", &LP2R_run, "Function that adds", py::arg("a"));
+  m.def("LP2R_run", &LP2R_run, "Function that adds");
 }
