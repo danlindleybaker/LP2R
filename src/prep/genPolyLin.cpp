@@ -115,8 +115,8 @@ for(int i=0; i<npoly; i++){ LPoly[i]->wt/=wttot; }
 
 // assign file names (and may be open output file for relaxation pathways
 assign_FNMs();
-RelSpecFNM = "test.dan";
-MechRelSpecFNM = "test.dan";
+RelSpecFNM = "outp.dat";
+MechRelSpecFNM = "outp.dat";
 // identify chains that should not get entangled dynamics
 // Calculate molar mass moments
 

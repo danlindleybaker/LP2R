@@ -32,7 +32,8 @@ int main(int argc, char *argv[]) {
       nalive = time_step(1);
     }
   }
-
+  
+  //MechRelSpecFNM = "outp.dat";
   LinRheology();
 
   if (OutPhiPhiST) {

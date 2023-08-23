@@ -1,3 +1,4 @@
+*.dan
 *.exe
 *.o
 *.pyd
