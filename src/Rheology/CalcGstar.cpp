@@ -22,7 +22,6 @@ while(freq < FreqMax){
 
   GStarRouse(freq, gptmp, g2ptmp, eptmp, e2ptmp); // unentangled Rouse
   gp+=gptmp; g2p+=g2ptmp; ep+=eptmp; e2p+=e2ptmp;
-
   if(Entangled_Dynamics){
     GStarFastRouse(freq, gptmp, g2ptmp); // In tube Rouse modes
      gp+=gptmp; g2p+=g2ptmp;

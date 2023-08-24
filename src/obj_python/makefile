@@ -11,7 +11,7 @@ GStarSlow.o CalcGstar.o CalcVisc.o add_goft_headers.o GoftRouse.o \
  GoftFast.o GoftTube.o  Calc_goft.o LinRheology.o
 
 default: $(obj_all) ../include/LP2R.h ../include/LP2R_NS.h ../main/LinPoly2Rheo.cpp
-	$(cpp_python) $(inc) ../main/LP2R_pybind.cpp $(obj_all) -o LP2R.cp311-win_amd64.pyd -lPython311
+	$(cpp_python) $(inc) ../main/LinPoly2Rheo_simple.cpp $(obj_all) -o LP2R.cp311-win_amd64.pyd -lPython311
 
 parse_arg.o : ../main/parse_arg.cpp 
 	$(cpp) -c ../main/parse_arg.cpp

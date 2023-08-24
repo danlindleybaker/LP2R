@@ -1,0 +1,1 @@
+In the second iteration, all polymers start off dead... why? CLPoly vector still in memory???? 

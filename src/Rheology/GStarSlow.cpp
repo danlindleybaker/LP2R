@@ -42,6 +42,7 @@ void symbint(const double tk, const double td, const double w, double &rint1,
   rint1 = -gamma * beta * t1 - 2.0 * sqrt(a) * (1.0 + alpha) * t2;
   rint2 = beta * gamma * (1.0 + alpha) * t1 / b - 2.0 * sqrt(a) * t2;
   t1 = 1.0 / (2.0 * rt2 * alpha * beta * a);
+  double tmp_dan = rint1 * t1;
   rint1 *= t1;
   rint2 *= t1;
 }
