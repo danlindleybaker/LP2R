@@ -1,5 +1,7 @@
 *.dan
+LP2R
 *.exe
 *.o
 *.pyd
+*.dat
 *.pyc
