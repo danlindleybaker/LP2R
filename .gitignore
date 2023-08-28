@@ -5,3 +5,8 @@ LP2R
 *.pyd
 *.dat
 *.pyc
+
+
+# Added by cargo
+
+/target
