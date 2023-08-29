@@ -1,3 +1,9 @@
+use lp2r::get_input::get_input;
+
 fn main() {
-    println!("Hello, world!");
+    let input_file: &str = "inp.dat";
+    println!("LP2R Rust...");
+    let test = get_input(input_file).unwrap();
+
+    println!("{}", test);
 }
