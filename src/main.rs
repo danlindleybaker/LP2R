@@ -4,6 +4,6 @@ fn main() {
     let input_file: &str = "inp.dat";
     println!("LP2R Rust...");
     let test = get_input(input_file).unwrap();
-
-    println!("{}", test);
+    println!("Input Struct:");
+    println!("{:?}", test);
 }
