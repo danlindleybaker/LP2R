@@ -5,9 +5,17 @@ fn main() {
     println!("LP2R Rust...");
 
     // parse input file
-    let test = init_parameters(input_file).expect("Problem parsing input file");
+    let (parameters, lpoly, data_arrays) = init_parameters(input_file).expect("Problem parsing input file");
+    println!("#####################");
     println!("Input Struct:");
-    println!("{:?}", test);
+    println!("{:?}", parameters);
+    println!("#####################");
+    println!("Lpoly[0]");
+    println!("{:?}", lpoly[0]);
+    println!("#####################");
+    println!("DataArrays: ");
+    println!("{:?}", data_arrays);
+
 
     // 
 }

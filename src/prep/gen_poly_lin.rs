@@ -1,88 +1,115 @@
-use crate::CLPoly;
+use crate::{CLPoly, Parameters};
 
-// This is an old conversion... haven't really checked it so if output is wrong, good to start
-// here... 
-
-#[allow(non_snake_case)]
-pub fn gen_lin_log_normal(n1: &mut i32, n: i32, mw: f32, pdi: f32, wtcomp: f32, LPoly: &mut Vec<CLPoly> ) {
-    let mut m_ar: Vec<f32> = vec![0.0; n as usize];
-    let mut w_ar: Vec<f32> = vec![0.0; n as usize];
-    let mu = mw.ln() - 1.50*pdi.ln();
-    let sigma = (pdi.ln()).sqrt(); 
-    let lnMlow = mu + sigma*sigma-2.63*2.0_f32.sqrt()*sigma;
-    let lnMhigh =mu + sigma*sigma+2.63*2.0_f32.sqrt()*sigma;
-    let M1 = lnMhigh.exp();
-    let M2 = lnMlow.exp();
-    
-    let (wtBin,MwBin)=LogNormalWt(mw, pdi, -1., M2);
-    
-    m_ar[0]=MwBin; w_ar[0]=wtBin;
-    let delta_lnM=(lnMhigh-lnMlow)/((n as f32-2.0));
-
-    for i in 0..n-2 {
-
-        let M1=(lnMlow + i as f32 *delta_lnM).exp();
-        let M2=(lnMlow + (i as f32+1.0)*delta_lnM).exp();
-        let (wtBin,MwBin)=LogNormalWt(mw, pdi, M1, M2);
-        m_ar[i as usize +1]=MwBin; w_ar[i as usize + 1]=wtBin;  
-        
-    }
-    let (wtBin,MwBin)=LogNormalWt(mw, pdi, M1, -1.0);
-    
-    m_ar[n as usize -1]=MwBin; w_ar[n as usize - 1]=wtBin;
-
-    let mut wtot: f32=0.0;
-    for i  in 0..n {
-        wtot += w_ar[i as usize];
-    }
-    for i in 0..n{
-        w_ar[i as usize] /= wtot;
-    }
-    
-
-    for i in 0..n {
-        LPoly.push(CLPoly {mass: m_ar[i as usize],
-        wt: wtcomp*w_ar[i as usize],z: 0.,z_chain: 0.,
-         alive: true, rept_set: false, relax_free_rouse: false,
-         tau_d_0: 1.0e22, z_rept: 0.,rept_wt: 0.,p_max: 0,p_next: 0, t_f_rouse: 0.});
-        *n1+=1;
-    }
-
-
-}
-#[allow(non_snake_case)]
-fn LogNormalWt(Mw: f32, PDI: f32, M1: f32, M2: f32) -> (f32, f32) 
+fn aaerfcc(x: f64) -> f64
 {
-    let mu = Mw.ln() - 1.50*PDI.ln();
-    let sigma = (PDI.ln()).sqrt();
-    let WtBin: f32;
-    let MwBin: f32;
-    if M1 < 0.0 { 
-        WtBin = 0.5*aaerfcc((mu + sigma*sigma - M2.ln())/(2.0_f32.sqrt()*sigma));
-        let t2=aaerfcc( (mu + 2.0*sigma*sigma - M2.ln())/(2.0_f32.sqrt()*sigma) );
-        MwBin=0.50*Mw*t2/WtBin;  // t1=erfc(infinity)=0;
-    }
-    else if M2 < 0.0 {
-        WtBin=1.0 - 0.5*aaerfcc( (mu + sigma*sigma - M1.ln())/(2.0_f32.sqrt()*sigma) );
-        let t1=aaerfcc( (mu + 2.0*sigma*sigma - M1.ln())/(2.0_f32.sqrt()*sigma) );
-        MwBin=0.50*Mw*(2.0 - t1)/WtBin;
-    } else {
-        let w1=0.5*aaerfcc( (mu + sigma*sigma - M1.ln())/(2.0_f32.sqrt()*sigma) );
-        let w2=0.5*aaerfcc( (mu + sigma*sigma - M2.ln())/(2.0_f32.sqrt()*sigma) );
-         WtBin=w2-w1;
-        let t1=aaerfcc( (mu + 2.0*sigma*sigma - M1.ln())/(2.0_f32.sqrt()*sigma) );
-        let t2=aaerfcc( (mu + 2.0*sigma*sigma - M2.ln())/(2.0_f32.sqrt()*sigma) );
-        MwBin=0.50*Mw*(t2 - t1)/WtBin;
-    }
+    let t: f64; 
+    let z: f64;
+    let ans: f64;
     
-    return (WtBin, MwBin)
+  z = x.abs();
+  t = 1.0 / (1.0 + 0.5 * z);
+  ans = t * (-z * z - 1.26551223 + t * (1.00002368 + t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 + t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277))))))))).exp();
+  if x >= 0.0 {return ans} else {return 2.0 - ans};
 }
 
-fn aaerfcc(x: f32) -> f32 {
-    let z = x.abs();
-    let t=1.0/(1.0+0.5*z);
-    let ans=t*(-z*z-1.26551223+t*(1.00002368+t*(0.37409196+t*(0.09678418+
-            t*(-0.18628806+t*(0.27886807+t*(-1.13520398+t*(1.48851587+
-            t*(-0.82215223+t*0.17087277))))))))).exp();
-    if x >= 0.0 {return ans} else {return 2.0-ans} 
+
+fn log_normal_wt(mw: f64, pdi: f64, m1: f64, m2: f64 , mw_bin: &mut f64) -> f64
+{
+  let mu = mw.ln() - 1.50 * pdi.ln();
+  let sigma = (pdi.ln()).sqrt();
+  let wt_bin: f64; 
+  if m1 < 0.0
+  { // (0, m2)
+    wt_bin = 0.50 * aaerfcc((mu + sigma * sigma - m2.ln()) / (2.0f64.sqrt() * sigma));
+    let t2 = aaerfcc((mu + 2.0 * sigma * sigma - m2.ln()) / (2.0f64.sqrt() * sigma));
+    *mw_bin = 0.50 * mw * t2 / wt_bin; // t1=erfc(infinity)=0
+  }
+  else
+  {
+    if m2 < 0.0
+    { // (m1, infinity)
+      wt_bin = 1.0 - 0.5 * aaerfcc((mu + sigma * sigma - m1.ln()) / (2.0f64.sqrt() * sigma));
+      let t1 = aaerfcc((mu + 2.0 * sigma * sigma - m1.ln()) / (2.0f64.sqrt() * sigma));
+      *mw_bin = 0.50 * mw * (2.0 - t1) / wt_bin;
+    }
+    else
+    { // (m1, m2)
+      let w1 = 0.5 * aaerfcc((mu + sigma * sigma - m1.ln()) / (2.0f64.sqrt() * sigma));
+      let w2 = 0.5 * aaerfcc((mu + sigma * sigma - m2.ln()) / (2.0f64.sqrt() * sigma));
+      wt_bin = w2 - w1;
+      let t1 = aaerfcc((mu + 2.0 * sigma * sigma - m1.ln()) / (2.0f64.sqrt() * sigma));
+      let t2 = aaerfcc((mu + 2.0 * sigma * sigma - m2.ln()) / (2.0f64.sqrt() * sigma));
+      *mw_bin = 0.50 * mw * (t2 - t1) / wt_bin;
+    }
+  }
+  return wt_bin;
+}
+
+/**
+ * Generate polymers from a logNormal distribution characterized by molar mass mw and pdi pdi.\n
+ * Special case: if either the number of discrete molar mass is one or pdi < 1, create
+ * a single polymer with the molar mass supplied.
+ * \param[in] n number of discrete molar mass to represent the distribution
+ * \param[in] mw weight averaged molar mass
+ * \param[in] pdi Polydispersity index
+ * \param[in] wtcomp weight fraction of this polymer componennt
+ */
+pub fn gen_linlog_normal(n: i32, mw: f64, pdi: f64, wtcomp: f64, lpoly: &mut Vec<CLPoly>, parameters: &mut Parameters)
+{
+  if (n <= 1) || (pdi <= 1.0)
+  {
+    let mut ptmp = CLPoly::new();
+    ptmp.mass = mw;
+    ptmp.wt = wtcomp;
+    ptmp.initialise(parameters.m_e);
+    
+    lpoly.push(ptmp);
+    //npoly+=1;
+    parameters.number_of_polymers += 1;
+    
+  }
+
+  
+  let mu = mw.ln() - 1.50 * pdi.ln();
+  let sigma = (pdi.ln()).sqrt();
+  let ln_m_low = mu + sigma * sigma - 2.63 * 2.0f64.sqrt() * sigma;
+  let ln_m_high = mu + sigma * sigma + 2.63 * 2.0f64.sqrt() * sigma;
+  let mut wt_bin: f64;
+    let mut mw_bin: f64= 0.0;
+    let mut m1:f64; let mut m2: f64;
+  m2 = ln_m_low.exp();
+  wt_bin = log_normal_wt(mw, pdi, -1.0, m2, &mut mw_bin);
+  let mut ptmp = CLPoly::new();
+    ptmp.mass = mw_bin; 
+    ptmp.wt = wt_bin*wtcomp;
+    ptmp.initialise(parameters.m_e);
+  lpoly.push(ptmp);
+  //npoly++;
+    parameters.number_of_polymers += 1;
+
+  let delta_ln_m = (ln_m_high - ln_m_low) / ((n as f64 - 2.0));
+  for i in 0..n-2
+  {
+    m1 = (ln_m_low + (i as f64) * delta_ln_m).exp();
+    m2 = (ln_m_low + (i as f64 + 1.0) * delta_ln_m).exp();
+    wt_bin = log_normal_wt(mw, pdi, m1, m2, &mut mw_bin);
+let mut ptmp = CLPoly::new();
+    ptmp.mass = mw_bin; 
+    ptmp.wt = wt_bin*wtcomp;
+    ptmp.initialise(parameters.m_e);
+  lpoly.push(ptmp);
+//    npoly++;
+    parameters.number_of_polymers+=1;
+  }
+  m1 = (ln_m_high).exp();
+  wt_bin = log_normal_wt(mw, pdi, m1, -1.0, &mut mw_bin );
+
+ 
+let mut ptmp = CLPoly::new();
+    ptmp.mass = mw_bin; 
+    ptmp.wt = wt_bin*wtcomp;
+    ptmp.initialise(parameters.m_e);
+  lpoly.push(ptmp);
+//  npoly++;
+    parameters.number_of_polymers +=1;
 }

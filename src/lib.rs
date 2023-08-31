@@ -1,21 +1,20 @@
 pub mod prep;
 
-
 #[derive(Debug)]
 pub struct CLPoly {
-    pub mass: f32,
-    pub wt: f32,
-    pub z_chain: f32,
-    pub z: f32,
+    pub mass: f64,
+    pub wt: f64,
+    pub z_chain: f64,
+    pub z: f64,
     pub alive: bool,
     pub relax_free_rouse: bool,
     pub rept_set: bool,
-    pub tau_d_0: f32,
-    pub z_rept: f32,
-    pub rept_wt: f32,
+    pub tau_d_0: f64,
+    pub z_rept: f64,
+    pub rept_wt: f64,
     pub p_max: i32,
     pub p_next: i32,
-    pub t_f_rouse: f32,
+    pub t_f_rouse: f64,
 }
 
 impl CLPoly {
@@ -36,51 +35,77 @@ impl CLPoly {
             t_f_rouse: 0.0,
         }
     }
+
+    fn initialise(&mut self, m_e: f64) {
+        self.z_chain = self.mass / m_e;
+        self.t_f_rouse = self.z_chain * self.z_chain;
+    }
 }
 
 #[derive(Debug)]
 pub struct Parameters {
     // parameters from input file
-    pub freq_min: f32,
-    pub freq_max: f32,
-    pub freq_ratio: f32,
-    pub m_kuhn: f32,
-    pub m_e: f32,
-    pub g_0: f32,
-    pub tau_e: f32,
-    pub g_glass: f32,
-    pub tau_glass: f32,
-    pub beta_glass: f32,
+    pub freq_min: f64,
+    pub freq_max: f64,
+    pub freq_ratio: f64,
+    pub m_kuhn: f64,
+    pub m_e: f64,
+    pub g_0: f64,
+    pub tau_e: f64,
+    pub g_glass: f64,
+    pub tau_glass: f64,
+    pub beta_glass: f64,
     pub number_of_components: i32,
     pub p_type: Vec<i32>,
-    pub wt_comp: Vec<f32>,
+    pub wt_comp: Vec<f64>,
     pub n_poly: Vec<i32>,
-    pub m_w: Vec<f32>,
-    pub pdi: Vec<f32>,
-    pub wt_tot: f32,
+    pub m_w: Vec<f64>,
+    pub pdi: Vec<f64>,
+    pub wt_tot: f64,
 
     // rc params
-    pub alpha: f32,
-    pub t_cr_start: f32,
-    pub delta_cr: f32,
-    pub b_zeta: f32,
-    pub a_eq: f32,
-    pub b_eq: f32,
-    pub ret_pref: f32,
-    pub rept_switch_factor: f32,
-    pub rouse_switch_factor: f32,
-    pub disentanglement_switch: f32,
-    pub ret_pref_0: f32,
-    pub ret_switch_exponent: f32,
+    pub alpha: f64,
+    pub t_cr_start: f64,
+    pub delta_cr: f64,
+    pub b_zeta: f64,
+    pub a_eq: f64,
+    pub b_eq: f64,
+    pub ret_pref: f64,
+    pub rept_switch_factor: f64,
+    pub rouse_switch_factor: f64,
+    pub disentanglement_switch: f64,
+    pub ret_pref_0: f64,
+    pub ret_switch_exponent: f64,
 
     // discrete time evolution control
-    pub cur_time: f32,
-    pub dt_mult: f32,
-    pub log_dt_mult: f32,
+    pub cur_time: f64,
+    pub dt_mult: f64,
+    pub log_dt_mult: f64,
 
     // polymer parameters
-    pub n_e: f32,
-    pub st_max_drop: f32,
+    pub n_e: f64,
+    pub st_max_drop: f64,
+    pub rouse_wt: f64,
+    pub sys_mn: f64,
+    pub sys_mw: f64,
+    pub sys_pdi: f64,
+    pub entangled_dynamics: bool,
+
+    // time dependent relaxation variables
+    pub phi_true: f64,
+    pub phi_st: f64,
+    pub phi_rept: f64,
+    pub phi_eq: f64,
+    pub psi_rept: f64,
+    pub last_reptation_time: f64,
+    pub last_rept_z: f64,
+    pub supertube_activated: bool,
+    pub above_tau_e_first: bool,
+    pub phi_st_0: f64,
+    pub st_activ_time: f64,
+
+    // count of total number of polymers
+    pub number_of_polymers: i32,
 }
 
 impl Parameters {
@@ -120,6 +145,23 @@ impl Parameters {
             log_dt_mult: 0.0,
             n_e: 0.0,
             st_max_drop: 0.0,
+            rouse_wt: 0.0,
+            sys_mn: 0.0,
+            sys_mw: 0.0,
+            sys_pdi: 1.0,
+            entangled_dynamics: true,
+            phi_true: 1.0,
+            phi_st: 1.0,
+            phi_rept: 1.0,
+            phi_eq: 1.0,
+            psi_rept: 1.0,
+            last_reptation_time: 1.0,
+            last_rept_z: 1.0,
+            supertube_activated: false,
+            above_tau_e_first: false,
+            phi_st_0: 1.0,
+            st_activ_time: 1.0,
+            number_of_polymers: 0,
         }
     }
 
@@ -136,5 +178,28 @@ impl Parameters {
         for i in 0..self.number_of_components as usize {
             self.wt_comp[i] /= self.wt_tot;
         }
+    }
+}
+#[derive(Debug)]
+pub struct DataArrays {
+    pub t_ar: Vec<f64>,
+    pub phi_ar: Vec<f64>,
+    pub phi_st_ar: Vec<f64>,
+    pub t_eq_ar: Vec<f64>,
+}
+
+impl DataArrays {
+    fn new() -> DataArrays {
+        let mut x = DataArrays {
+            t_ar: Vec::new(),
+            phi_ar: Vec::new(),
+            phi_st_ar: Vec::new(),
+            t_eq_ar: Vec::new(),
+        };
+        x.t_ar.push(0.0);
+        x.phi_ar.push(1.0);
+        x.phi_st_ar.push(1.0);
+        x.t_eq_ar.push(0.0);
+        return x;
     }
 }
