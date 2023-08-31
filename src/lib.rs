@@ -1,4 +1,6 @@
 pub mod get_input;
+pub mod gen_poly_lin;
+
 
 #[derive(Debug)]
 pub struct CLPoly {
