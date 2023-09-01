@@ -3,11 +3,15 @@ use crate::rheology::g_star_glass::g_star_glass;
 use crate::rheology::g_star_rouse::g_star_rouse;
 use crate::rheology::g_star_slow::g_star_slow;
 use crate::{CLPoly, DataArrays, Parameters, Results};
+use std::io::Write;
+use std::fs::File;
 pub fn calc_g_star(
     parameters: &mut Parameters,
     lpoly: &mut Vec<CLPoly>,
     data_arrays: &mut DataArrays,
 ) -> Results {
+
+    let mut output_file = File::create("outp.dat").unwrap();  // automatically closed when out of scope
     let mut results = Results::new();
     parameters.freq_min = parameters.freq_min * parameters.tau_e;
     parameters.freq_max = parameters.freq_max * parameters.tau_e;
@@ -69,6 +73,8 @@ pub fn calc_g_star(
         results.ep_ar.push(ep);
         results.e2p_ar.push(e2p);
         results.viscosity_ar.push(visc);
+
+        writeln!(&mut output_file, "{:.6}\t{:.6}\t{:.6}\t{:.6}\t{:.6}\t{:.6}", freq/parameters.tau_e, gp*parameters.g_0, g2p*parameters.g_0, ep, e2p, visc).unwrap();    
     }
   results
 }

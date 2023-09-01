@@ -16,12 +16,12 @@ pub fn g_star_fast_rouse(
     let mut tv2: f64;
     let mut tv4: f64;
     let w2 = w * w;
-    let mut zi: i32;
+    let mut zi: i64;
 
     for i1 in 0..parameters.number_of_polymers as usize {
         if !lpoly[i1].relax_free_rouse {
             let zz = lpoly[i1].z_chain;
-            zi = zz.ceil() as i32;
+            zi = zz.ceil() as i64;
             gp = 0.0;
             g2p = 0.0;
 
@@ -34,7 +34,7 @@ pub fn g_star_fast_rouse(
                 g2p += tv2 / (w2 + tv4);
             }
 
-            let max_term = (parameters.n_e * zz).ceil() as i32;
+            let max_term = (parameters.n_e * zz).ceil() as i64;
             for i in zi..max_term {
                 // internal Rouse modes
                 tv = i as f64 / zz;

@@ -17,7 +17,7 @@ pub fn g_star_rouse(freq: f64, grs: &mut f64,  g2rs: &mut f64, ers: &mut f64,
     if lpoly[i1].relax_free_rouse {
       (g_r , g2_r , e_r , e2_r) =( 0.0, 0.0 ,0.0, 0.0);
       let tau1 = lpoly[i1].t_f_rouse; // Z^2 * tau_e
-      let pmax = (lpoly[i1].z_chain * parameters.n_e).ceil() as i32;
+      let pmax = (lpoly[i1].z_chain * parameters.n_e).ceil() as i64;
 
       for p in 1..=pmax {
         let psq = (p * p) as f64;
