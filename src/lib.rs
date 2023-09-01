@@ -1,4 +1,6 @@
 pub mod prep;
+pub mod relax;
+pub mod rheology;
 
 #[derive(Debug)]
 pub struct CLPoly {
@@ -106,6 +108,7 @@ pub struct Parameters {
 
     // count of total number of polymers
     pub number_of_polymers: i32,
+    pub phi_eq_index: usize,
 }
 
 impl Parameters {
@@ -162,6 +165,7 @@ impl Parameters {
             phi_st_0: 1.0,
             st_activ_time: 1.0,
             number_of_polymers: 0,
+            phi_eq_index: 0,
         }
     }
 
@@ -202,4 +206,31 @@ impl DataArrays {
         x.t_eq_ar.push(0.0);
         return x;
     }
+}
+
+#[derive(Debug)]
+pub struct Results {
+    pub freq: Vec<f64>,
+    pub gp_ar: Vec<f64>,
+    pub g2p_ar: Vec<f64>,
+    pub ep_ar: Vec<f64>,
+    pub e2p_ar: Vec<f64>,
+    pub viscosity_ar: Vec<f64>,
+}
+
+impl Results {
+    fn new() -> Results {
+        Results {
+            freq: Vec::new(),
+            gp_ar: Vec::new(),
+            g2p_ar: Vec::new(),
+            ep_ar: Vec::new(),
+            e2p_ar: Vec::new(),
+            viscosity_ar: Vec::new()
+        }
+    }
+}
+extern "C" {
+    pub fn kwws(win: cty::c_double, beta: cty::c_double) -> cty::c_double;
+    pub fn kwwc(win: cty::c_double, beta: cty::c_double) -> cty::c_double;
 }
