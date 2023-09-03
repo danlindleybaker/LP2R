@@ -61,8 +61,6 @@ pub fn g_star_slow(
         for m in 1..n {
             // loop over phi_ST
 
-            // Dan Comment: pow is slow. If Alpha == 1, then pow() is redundant. Let's
-            // make this pow() invocation conditional.
             if parameters.alpha == 1.0 {
                 dphi_st = data_arrays.phi_st_ar[m - 1] - data_arrays.phi_st_ar[m];
             } else {
