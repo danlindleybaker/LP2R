@@ -12,7 +12,9 @@ pub fn frac_unrelaxed(parameters: &mut Parameters, lpoly: &mut Vec<CLPoly>, data
     {
     if lpoly[i].alive {
       parameters.phi_true += lpoly[i].wt * (1.0 - 2.0 * lpoly[i].z / lpoly[i].z_chain);
+       
     }
+      
   }
 
   if parameters.cur_time > parameters.t_cr_start { // only thin tube available before this time

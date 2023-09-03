@@ -57,6 +57,7 @@ pub fn g_star_slow(
         // loop over phi
         dphi = data_arrays.phi_ar[k - 1] - data_arrays.phi_ar[k];
         tk = data_arrays.t_ar[k];
+
         for m in 1..n {
             // loop over phi_ST
 
@@ -68,7 +69,7 @@ pub fn g_star_slow(
                 dphi_st = data_arrays.phi_st_ar[m - 1].powf(parameters.alpha)
                     - data_arrays.phi_st_ar[m].powf(parameters.alpha);
             }
-            tm = data_arrays.t_ar[m];
+                        tm = data_arrays.t_ar[m];
             tkm = tk * tm / (tk + tm);
             tv = tkm / (1.0 + wsq * tkm * tkm);
             *gp += tv * tkm * dphi * dphi_st;

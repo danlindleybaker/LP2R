@@ -63,7 +63,7 @@ pub fn calc_g_star(
             g2p += (1.0 - parameters.rouse_wt) * g2ptmp;
             ep += (1.0 - parameters.rouse_wt) * eptmp;
             e2p += (1.0 - parameters.rouse_wt) * e2ptmp;
-            println!("gp = {}", gp);
+            //println!("gp = {}", gp);
         }
 
         let visc = parameters.g_0 * parameters.tau_e * (gp * gp + g2p * g2p).sqrt() / freq;

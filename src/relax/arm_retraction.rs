@@ -26,5 +26,7 @@ pub fn arm_retraction(np: usize, index: i32, parameters: &mut Parameters, lpoly:
       lpoly[np].alive = false;
     }
     lpoly[np].z = z0 + dz;
+
+     
   }
 }
