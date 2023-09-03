@@ -40,7 +40,7 @@ pub fn try_reptate(np: usize, parameters: &mut Parameters, lpoly: &mut Vec<CLPol
             }
             lpoly[np].p_next = lpoly[np].p_max;
             lpoly[np].rept_wt = 0.0;
-            for i in 1..lpoly[np].p_max {
+            for i in (1..=lpoly[np].p_max).step_by(2) {
                 lpoly[np].rept_wt += 1.0 / ((i * i) as f64);
             }
         } // Set reptation

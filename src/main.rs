@@ -25,7 +25,7 @@ fn main() {
         }
     }
 
-//    let results = lin_rheology(&mut parameters, &mut lpoly, &mut data_arrays);
+    let results = lin_rheology(&mut parameters, &mut lpoly, &mut data_arrays);
 
     //
 }
