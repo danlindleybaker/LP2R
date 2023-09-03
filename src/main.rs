@@ -20,7 +20,7 @@ fn main() {
             if count == 609 {
          //       println!("phi_st_ar[69] = {}", data_arrays.phi_st_ar[count]);
             }
-            println!("Count = {}", count);
+//            println!("Count = {}", count);
             count += 1;
         }
     }

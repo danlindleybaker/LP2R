@@ -51,7 +51,10 @@ pub fn try_reptate(np: usize, parameters: &mut Parameters, lpoly: &mut Vec<CLPol
         if parameters.cur_time > (lpoly[np].tau_d_0 / psq) {
             lpoly[np].z += 0.50 * lpoly[np].z_rept / (lpoly[np].rept_wt * psq);
             if np == 3 {
+                println!("#################################");
+                println!("lpoly[{}].z_rept = {}", np, lpoly[np].z_rept);
                 println!("lpoly[{}].z = {}", np, lpoly[np].z);
+                println!("lpoly[{}].rept_wt = {}", np, lpoly[np].rept_wt);
             }
             if lpoly[np].p_next == 1 {
                 lpoly[np].z = 0.50 * lpoly[np].z_chain;
