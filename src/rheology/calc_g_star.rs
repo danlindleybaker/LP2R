@@ -11,6 +11,10 @@ pub fn calc_g_star(
     data_arrays: &mut DataArrays,
 ) -> Results {
     let mut output_file = File::create("outp.dat").unwrap(); // automatically closed when out of scope
+    writeln!(
+            &mut output_file,
+            "w\tG'(w)\tG''(w)\teps'(w)\teps''(w)\teta(w)").unwrap();
+
     let mut results = Results::new();
     parameters.freq_min = parameters.freq_min * parameters.tau_e;
     parameters.freq_max = parameters.freq_max * parameters.tau_e;
