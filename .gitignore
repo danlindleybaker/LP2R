@@ -1,8 +1,12 @@
 *.dan
+LP2R
 *.exe
 *.o
 *.pyd
-*.pyc
 *.dat
-\target
-target/
+*.pyc
+
+
+# Added by cargo
+
+/target
