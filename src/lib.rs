@@ -7,8 +7,8 @@ use crate::rheology::lin_rheology;
 use pyo3::prelude::*;
 
 #[pyfunction]
-fn lp2r() {
-    let input_file: &str = "inp.dat";
+fn lp2r(input_file: &str) {
+    //let input_file: &str = "inp.dat";
     println!("LP2R Rust...");
 
     // parse input file
